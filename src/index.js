@@ -7,16 +7,44 @@ const { GraphQLServer } = require('graphql-yoga');
 const typeDefs = `
     type Query {
         info: String!
+        feed: [Link!]!
+    }
+
+    type Link {
+        id: ID!
+        description: String!
+        url: String!
     }
 `
 /**
+ * A new list with dummy data
+ */
+
+let links = [{
+    id: 'link-0',
+    url: 'www.howtographql.com',
+    description: 'Fullstack tutorial for GraphQL'
+}]
+
+/**
  * Resolvers object is the actual implementation of the GraphQL schema. It mirrors the 
  * Query, Mutation and Subscription types and their fields from the application schema.
+ * Not only root fields, but virtually all fields on the types in a GraphQL schema have
+ * resolver functions. 
+ * A resolver always has to be named after the corresponding field from the schema 
+ * definition.
  */
 const resolvers = {
     Query: {
-        info: () => null,
-    }
+        info: () => `This is the API of a Hackernews Clone`,
+        feed: () => links
+    },
+
+    // Link: {
+    //     id: (parent) => parent.id,
+    //     description: (parent) => parent.description,
+    //     url: (parent) => parent.url,
+    // }
 };
 
 
