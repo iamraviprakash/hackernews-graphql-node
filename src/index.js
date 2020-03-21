@@ -1,32 +1,9 @@
 const { GraphQLServer } = require('graphql-yoga');
+const { prisma } = require('./generated/prisma-client')
 
 /**
  * "typeDefs" defines GraphQL schema. '!' denotes that the field can never be null. Type
  * definitions from the application schema.
- */ 
-const typeDefs = `
-    type Query {
-        info: String!
-        feed: [Link!]!
-    }
-
-    type Link {
-        id: ID!
-        description: String!
-        url: String!
-    }
-`
-/**
- * A new list with dummy data
- */
-
-let links = [{
-    id: 'link-0',
-    url: 'www.howtographql.com',
-    description: 'Fullstack tutorial for GraphQL'
-}]
-
-/**
  * Resolvers object is the actual implementation of the GraphQL schema. It mirrors the 
  * Query, Mutation and Subscription types and their fields from the application schema.
  * Not only root fields, but virtually all fields on the types in a GraphQL schema have
@@ -34,17 +11,43 @@ let links = [{
  * A resolver always has to be named after the corresponding field from the schema 
  * definition.
  */
+
+
 const resolvers = {
     Query: {
         info: () => `This is the API of a Hackernews Clone`,
-        feed: () => links
+        feed: (root, args, context, info) => {
+            return context.prisma.links()
+        },
+        link: (root, args, context, info) => {
+            return context.prisma.links().find((link) => {
+                return link.id === args.id
+            })
+        }
     },
 
-    // Link: {
-    //     id: (parent) => parent.id,
-    //     description: (parent) => parent.description,
-    //     url: (parent) => parent.url,
-    // }
+    Mutation: {
+        post: (root, args, context) => {      
+            return context.prisma.createLink({
+                description: args.description,
+                url: args.url,
+            });
+        },
+        update: (root, args, context) => {
+            let index = context.prisma.links().findIndex((link) => {
+                return link.id === args.id
+            });
+            // Prisma method to update 
+            return link;
+        },
+        delete: (root, args, context) => {
+            let index = context.prisma.links().findIndex((link) => {
+                return link.id === args.id
+            });
+            // Prisma method to delete
+            return link;
+        }
+    },
 };
 
 
@@ -61,8 +64,9 @@ const resolvers = {
  * should be resolved.
  */
 const server = new GraphQLServer({
-    typeDefs,
+    typeDefs : './src/schema.graphql',
     resolvers,
+    context: { prisma }
 });
 
 /**
