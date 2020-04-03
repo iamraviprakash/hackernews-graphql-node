@@ -1,7 +1,7 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 # Project Description
-This project is inspired from a tutorial on GraphQL and Apollo Client provided by the [HowToGraphQL](https://howtographql.com).This covers the concept which can implemented by the GraphQL:
+This project is inspired from a tutorial on GraphQL, Node, and Prisma provided by the [HowToGraphQL](https://howtographql.com). This covers the concept writing query types, resolvers, mutations and, subscriptions implemented with the GraphQL:
 1. Query Types
 2. Resolvers
 3. Mutations
